@@ -1,5 +1,893 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>Overleaf Inbox Dashboard</title></head>
-<body style="font-family:monospace;padding:40px;background:#eceae2">
-<h2>Dashboard not yet generated.</h2>
-<p>First cron run will populate this.</p>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inbox Rotation Dashboard — Monday, August 31, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Courier Prime', 'Courier New', Courier, monospace; box-sizing: border-box; }
+    body { margin: 0; padding: 0; background: #eceae2; color: #1a1918; }
+
+    .wrap { max-width: 100vw; margin: 0 auto; padding: 24px 32px 48px; }
+
+    /* ── Masthead ── */
+    .meta-row { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; }
+    .meta-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #7a7870; }
+    .masthead-rule { border-top: 3px solid #1a1918; padding-top: 10px; padding-bottom: 14px; }
+    h1 { margin: 0; font-size: 36px; font-weight: 700; color: #1a1918; letter-spacing: -0.5px; line-height: 1; }
+    .sub { font-size: 12px; color: #7a7870; margin-top: 6px; }
+
+    /* ── Client sections ── */
+    .client-section { margin-top: 40px; }
+    .client-header { border-top: 3px solid #1a1918; padding-top: 10px; margin-bottom: 16px; }
+    h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; color: #1a1918; }
+
+    /* ── Domain tables ── */
+    .domain-table { width: auto; border-collapse: collapse; margin-top: 2px; table-layout: auto; }
+    .domain-table th {
+      padding: 2px 6px;
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      color: #7a7870; border-bottom: 2px solid #1a1918;
+      white-space: nowrap;
+      vertical-align: bottom;
+    }
+    .domain-table td {
+      padding: 2px 6px;
+      font-size: 11px; font-variant-numeric: tabular-nums;
+      border-bottom: 1px solid rgba(26,25,24,0.12);
+      white-space: nowrap;
+    }
+    .domain-table tr:last-child td { border-bottom: none; }
+
+    .td-domain  { font-weight: 700; color: #1a1918; }
+    .td-pool    { text-align: center; width: 22px; font-size: 12px; }
+    .td-sends   { text-align: right; color: #aaa8a0; font-size: 10px; width: 40px; }
+    .td-rate    { text-align: right; font-weight: 700; width: 44px; }
+    .td-action  { color: #7a7870; font-size: 10px; white-space: normal; min-width: 180px; max-width: 220px; line-height: 1.35; }
+
+    .col-sends { width: 40px; }
+    .col-rate  { width: 44px; }
+
+    .th-group-newer { background: rgba(26,25,24,0.08); }
+    .th-group-older { background: rgba(26,25,24,0.04); }
+
+    .col-group-divider { border-left: 2px solid rgba(26,25,24,0.15); }
+
+    .rate-high { color: #1a6b3a; }
+    .rate-mid  { color: #8b5a00; }
+    .rate-low  { color: #1a1918; }
+    .rate-zero { color: #aaa8a0; }
+
+    .warming-separator td {
+      padding: 10px 10px 4px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+      color: #7a7870;
+      border-top: 2px solid #1a1918;
+      border-bottom: 1px solid rgba(26,25,24,0.2);
+    }
+
+    .warming-row { opacity: 0.5; }
+    .warming-row .td-domain { font-weight: 400; }
+
+    .footer {
+      border-top: 1px solid #1a1918; margin-top: 40px; padding-top: 10px;
+      font-size: 10px; color: #aaa8a0;
+      display: flex; justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ── Masthead ── -->
+  <div class="meta-row">
+    <span class="meta-label">Overleaf — Internal Ops</span>
+    <span class="meta-label">Monday, August 31, 2026</span>
+  </div>
+  <div class="masthead-rule">
+    <h1>Inbox Rotation Dashboard</h1>
+    <p class="sub">3 client(s) &middot; Data as of 2026-08-31 &middot; Internal ops only</p>
+  </div>
+
+  <!-- ── Client sections ── -->
+  
+  <div class="client-section">
+    <div class="client-header">
+      <h2>FutureLab</h2>
+    </div>
+
+    <table class="domain-table">
+      <thead>
+        <tr>
+          <th align="left" rowspan="2" style="vertical-align:bottom">Domain</th>
+          <th align="center" rowspan="2" style="vertical-align:bottom;width:22px">Pool</th>
+          <th align="center" colspan="2" class="th-group-newer col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            Last 28 Days · Aug 3–Aug 31
+          </th>
+          <th align="center" colspan="2" class="th-group-older col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            14d — 2 Wks Ago · Aug 3–Aug 17
+          </th>
+          <th align="center" colspan="2" class="th-group-newer col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            Last 14 Days · Aug 17–Aug 31
+          </th>
+          <th align="right" rowspan="2" class="col-group-divider" style="vertical-align:bottom;padding-left:8px">Bounce%<br><span style="font-weight:400;font-style:italic;text-transform:none;letter-spacing:0">(current)</span></th>
+          <th align="left" rowspan="2" style="vertical-align:bottom">Recommendation</th>
+        </tr>
+        <tr>
+          <th align="right" class="th-group-newer col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-newer col-rate" style="width:44px">Reply%</th>
+          <th align="right" class="th-group-older col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-older col-rate" style="width:44px">Reply%</th>
+          <th align="right" class="th-group-newer col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-newer col-rate" style="width:44px">Reply%</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        
+        <tr>
+          <td class="td-domain">joinfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">247</td>
+          <td class="td-rate rate-low">0.40%</td>
+          <td class="td-sends col-group-divider">112</td>
+          <td class="td-rate rate-mid">0.89%</td>
+          <td class="td-sends col-group-divider">174</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">↓ Declining — watch closely</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">choosefuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">568</td>
+          <td class="td-rate rate-low">0.35%</td>
+          <td class="td-sends col-group-divider">449</td>
+          <td class="td-rate rate-low">0.45%</td>
+          <td class="td-sends col-group-divider">182</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">↓ Declining — watch closely</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">easyfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">572</td>
+          <td class="td-rate rate-low">0.35%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-low">0.33%</td>
+          <td class="td-sends col-group-divider">292</td>
+          <td class="td-rate rate-low">0.34%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.17%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">tryfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">572</td>
+          <td class="td-rate rate-low">0.35%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-mid">0.66%</td>
+          <td class="td-sends col-group-divider">293</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.17%</td>
+          <td class="td-action">↓ Declining — watch closely</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">runfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">573</td>
+          <td class="td-rate rate-low">0.17%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-low">0.33%</td>
+          <td class="td-sends col-group-divider">293</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.35%</td>
+          <td class="td-action">↓ Declining — watch closely</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">usefuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">572</td>
+          <td class="td-rate rate-low">0.17%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-low">0.33%</td>
+          <td class="td-sends col-group-divider">293</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.17%</td>
+          <td class="td-action">↓ Declining — watch closely</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">addfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">569</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">449</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">182</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.18%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">askfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">569</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">449</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">182</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.18%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">bigfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">568</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">449</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">182</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">connectfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">572</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">292</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.17%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">fastfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">407</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">280</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">178</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">futurelabapp.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">568</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">449</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">181</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">futurelabofficial.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">407</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">280</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">178</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">getfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">247</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">112</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">174</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.40%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">officialfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">247</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">112</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">173</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">profuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">246</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">112</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">173</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">sayfuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">247</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">113</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">174</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.40%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">ultrafuturelab.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">572</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">293</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.17%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+
+        
+        <tr class="warming-separator">
+          <td colspan="10">🔥 Warming Up — not yet in any campaign</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">growfuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">hyperfuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">omnifuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">reachfuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">sendfuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">startfuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">topfuturelab.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        
+
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="client-section">
+    <div class="client-header">
+      <h2>LOGIDOX</h2>
+    </div>
+
+    <table class="domain-table">
+      <thead>
+        <tr>
+          <th align="left" rowspan="2" style="vertical-align:bottom">Domain</th>
+          <th align="center" rowspan="2" style="vertical-align:bottom;width:22px">Pool</th>
+          <th align="center" colspan="2" class="th-group-newer col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            Last 28 Days · Aug 3–Aug 31
+          </th>
+          <th align="center" colspan="2" class="th-group-older col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            14d — 2 Wks Ago · Aug 3–Aug 17
+          </th>
+          <th align="center" colspan="2" class="th-group-newer col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            Last 14 Days · Aug 17–Aug 31
+          </th>
+          <th align="right" rowspan="2" class="col-group-divider" style="vertical-align:bottom;padding-left:8px">Bounce%<br><span style="font-weight:400;font-style:italic;text-transform:none;letter-spacing:0">(current)</span></th>
+          <th align="left" rowspan="2" style="vertical-align:bottom">Recommendation</th>
+        </tr>
+        <tr>
+          <th align="right" class="th-group-newer col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-newer col-rate" style="width:44px">Reply%</th>
+          <th align="right" class="th-group-older col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-older col-rate" style="width:44px">Reply%</th>
+          <th align="right" class="th-group-newer col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-newer col-rate" style="width:44px">Reply%</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        
+        <tr>
+          <td class="td-domain">logidox.com.au</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">86</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">12</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">74</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+
+        
+        <tr class="warming-separator">
+          <td colspan="10">🔥 Warming Up — not yet in any campaign</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">getlogidox.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">hellologidox.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">joinlogidox.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">trylogidox.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        
+
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="client-section">
+    <div class="client-header">
+      <h2>Overleaf</h2>
+    </div>
+
+    <table class="domain-table">
+      <thead>
+        <tr>
+          <th align="left" rowspan="2" style="vertical-align:bottom">Domain</th>
+          <th align="center" rowspan="2" style="vertical-align:bottom;width:22px">Pool</th>
+          <th align="center" colspan="2" class="th-group-newer col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            Last 28 Days · Aug 3–Aug 31
+          </th>
+          <th align="center" colspan="2" class="th-group-older col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            14d — 2 Wks Ago · Aug 3–Aug 17
+          </th>
+          <th align="center" colspan="2" class="th-group-newer col-group-divider" style="border-bottom:1px solid rgba(26,25,24,0.2);text-align:center">
+            Last 14 Days · Aug 17–Aug 31
+          </th>
+          <th align="right" rowspan="2" class="col-group-divider" style="vertical-align:bottom;padding-left:8px">Bounce%<br><span style="font-weight:400;font-style:italic;text-transform:none;letter-spacing:0">(current)</span></th>
+          <th align="left" rowspan="2" style="vertical-align:bottom">Recommendation</th>
+        </tr>
+        <tr>
+          <th align="right" class="th-group-newer col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-newer col-rate" style="width:44px">Reply%</th>
+          <th align="right" class="th-group-older col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-older col-rate" style="width:44px">Reply%</th>
+          <th align="right" class="th-group-newer col-group-divider col-sends" style="width:40px">Sends</th>
+          <th align="right" class="th-group-newer col-rate" style="width:44px">Reply%</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        
+        <tr>
+          <td class="td-domain">agri-leaves.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-high">2.41%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-high">2.41%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">reachleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-high">2.41%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-high">2.41%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">runoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-high">2.41%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-high">2.41%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">overleafhq.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">601</td>
+          <td class="td-rate rate-high">2.00%</td>
+          <td class="td-sends col-group-divider">360</td>
+          <td class="td-rate rate-mid">1.94%</td>
+          <td class="td-sends col-group-divider">301</td>
+          <td class="td-rate rate-mid">1.66%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.33%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">joinagrileaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">overagriculture.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">overleaftech.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">sayoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.81%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">easyoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">602</td>
+          <td class="td-rate rate-mid">1.33%</td>
+          <td class="td-sends col-group-divider">360</td>
+          <td class="td-rate rate-mid">1.11%</td>
+          <td class="td-sends col-group-divider">302</td>
+          <td class="td-rate rate-mid">1.32%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.50%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">agri-leaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.20%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.20%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">overleafsolutions.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.20%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">1.20%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">openoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">601</td>
+          <td class="td-rate rate-mid">1.16%</td>
+          <td class="td-sends col-group-divider">360</td>
+          <td class="td-rate rate-mid">0.56%</td>
+          <td class="td-sends col-group-divider">301</td>
+          <td class="td-rate rate-mid">1.66%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.33%</td>
+          <td class="td-action">↑ Improving — keep active</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">joinoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">601</td>
+          <td class="td-rate rate-mid">1.00%</td>
+          <td class="td-sends col-group-divider">360</td>
+          <td class="td-rate rate-mid">0.83%</td>
+          <td class="td-sends col-group-divider">301</td>
+          <td class="td-rate rate-mid">1.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.33%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">ultraoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">0.60%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-mid">0.60%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Performing normally</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">fastoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">601</td>
+          <td class="td-rate rate-low">0.17%</td>
+          <td class="td-sends col-group-divider">360</td>
+          <td class="td-rate rate-low">0.28%</td>
+          <td class="td-sends col-group-divider">301</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.33%</td>
+          <td class="td-action">↓ Declining — watch closely</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">overleafpro.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">83</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">83</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+        <tr>
+          <td class="td-domain">reachoverleaf.com</td>
+          <td class="td-pool" title="In Pool">✅</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td class="td-sends col-group-divider">—</td>
+          <td class="td-rate rate-zero">—</td>
+          <td class="td-sends col-group-divider">166</td>
+          <td class="td-rate rate-zero">0.00%</td>
+          <td align="right" class="col-group-divider" style="font-size:11px;font-variant-numeric:tabular-nums;color:#1a6b3a;padding-left:8px">0.00%</td>
+          <td class="td-action">Persistent 0% — rotation candidate</td>
+        </tr>
+        
+
+        
+        <tr class="warming-separator">
+          <td colspan="10">🔥 Warming Up — not yet in any campaign</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">askoverleaf.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">hyperoverleaf.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        <tr class="warming-row">
+          <td class="td-domain">overleafs.com</td>
+          <td class="td-pool" title="Warming Up">🔥</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="td-sends col-group-divider" style="color:#aaa8a0">—</td>
+          <td style="color:#aaa8a0;text-align:right">—</td>
+          <td class="col-group-divider" style="color:#aaa8a0;text-align:right;padding-left:8px">—</td>
+          <td class="td-action" style="color:#aaa8a0">Warming up — no action</td>
+        </tr>
+        
+        
+
+      </tbody>
+    </table>
+  </div>
+  
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    <span>Overleaf internal ops</span>
+    <span>Generated by run.py &middot; Instantly API &middot; 2026-08-31</span>
+  </div>
+
+</div>
+</body>
+</html>
