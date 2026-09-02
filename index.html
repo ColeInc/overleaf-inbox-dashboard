@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Inbox Rotation Dashboard — Wednesday, September 2, 2026</title>
+  <link id="favicon" rel="icon" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -84,7 +85,7 @@
   <!-- ── Masthead ── -->
   <div class="meta-row">
     <span class="meta-label">Overleaf — Internal Ops</span>
-    <span class="meta-label">Last refreshed: 3 Sep 2026, 6:57am NZT</span>
+    <span class="meta-label">Last refreshed: 3 Sep 2026, 7:18am NZT</span>
   </div>
   <div class="masthead-rule">
     <h1>Inbox Rotation Dashboard</h1>
@@ -884,5 +885,96 @@
   </div>
 
 </div>
+
+<script>
+(function () {
+  const SIZE = 64;
+  const cx = SIZE / 2, cy = SIZE / 2, R = SIZE / 2 - 1;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = SIZE;
+  const ctx = canvas.getContext('2d');
+  const favicon = document.getElementById('favicon');
+
+  // Colours matching the dashboard palette
+  const INK    = '#1a1918';
+  const CREAM  = '#eceae2';
+  const MID    = '#3a3936';
+  const GREEN  = '#1a6b3a';
+  const GROOVE = '#2a2927';
+
+  let angle = 0;
+
+  function drawFrame(a) {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+
+    // ── Outer disc ──
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fillStyle = INK;
+    ctx.fill();
+
+    // ── Grooves (3 concentric rings, rotating) ──
+    [0.82, 0.68, 0.54].forEach((frac, i) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * frac, 0, Math.PI * 2);
+      ctx.strokeStyle = GROOVE;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
+
+    // ── Rotating sector highlight — makes rotation visible ──
+    // A subtle arc sweep that spins
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(a);
+    const grad = ctx.createConicalGradient
+      ? null  // fallback below
+      : null;
+    // Simple: two thin bright spokes at 0° and 180°
+    [[0, 0.92], [Math.PI, 0.75]].forEach(([spokeAngle, reach]) => {
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(spokeAngle) * R * reach, Math.sin(spokeAngle) * R * reach);
+      ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // ── Label area (inner disc, cream) ──
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 0.36, 0, Math.PI * 2);
+    ctx.fillStyle = CREAM;
+    ctx.fill();
+
+    // ── Spinning dot on the label — clearly shows rotation ──
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(a);
+    const dotDist = R * 0.22;
+    ctx.beginPath();
+    ctx.arc(dotDist, 0, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = GREEN;
+    ctx.fill();
+    ctx.restore();
+
+    // ── Centre spindle hole ──
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = INK;
+    ctx.fill();
+  }
+
+  function tick() {
+    angle += 0.045;  // ~2.6° per frame — smooth but clearly moving
+    drawFrame(angle);
+    favicon.href = canvas.toDataURL('image/png');
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+})();
+</script>
 </body>
 </html>
